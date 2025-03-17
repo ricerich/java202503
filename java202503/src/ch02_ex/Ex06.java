@@ -1,4 +1,4 @@
-package java202503;
+package ch02_ex;
 
 import java.util.Scanner;
 
