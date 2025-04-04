@@ -23,18 +23,25 @@ class Oval implements Shape {
 
 }
 
-public class Rect implements Shape {
+class Rect implements Shape {
+
+	private int width;
+	private int height;
+
+	public Rect(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
 
 	@Override
 	public void draw() {
-		// TODO Auto-generated method stub
+		System.out.println("("+width+"x"+height+") 크기의 사각형입니다");
 
 	}
 
 	@Override
 	public double getArea() {
-		// TODO Auto-generated method stub
-		return 0;
+		return width*height;
 	}
 
 }
