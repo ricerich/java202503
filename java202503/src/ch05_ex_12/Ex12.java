@@ -85,11 +85,17 @@ class ShapeManager
 					System.out.print("삭제할 도형의 위치>>");
 					int index = sc1.nextInt();
 					
-					delete(index);
-					
+					boolean ok = delete(index);
+					if(ok == false ) {
+						System.out.println("삭제에 실패하였습니다!");
+					}					
 					break;
 				case 3://모두보기
-					
+					Shape s = first;
+					while(s != null) {
+						s.draw();
+						s = s.next;
+					}
 //					view();					
 					break;
 				case 4://종료
@@ -100,34 +106,49 @@ class ShapeManager
 			
 			}
 		}
-		
 	}
 
-	private void delete(int index) {
+	private boolean delete(int index) {
 		
 		Shape previous=first;
 		Shape current=first;
 		
 		//1.아무것도 없을 때 종료
 		if(first == null)
-			return;
+			return false;
 		
 		//2.지정한 인덱스 위치까지 이동
 		for(int i=0; i<index; i++) {
 			previous = current;//뒤로 이동하기 전에, 담아둠
 			current = current.next;//뒤로 이동
+			
+			if(current == null)
+				return false;
 		}
 		
-		//3.원소가 1개 밖에 없을때
+		//3-1.원소가 1개 밖에 없을때
 		if(first == last) {
 			first = null;
 			last = null;
+			return true;
 		}
 		
-		//4.첫번째 원소를 삭제하는 경우
-			
+		//3.실제 삭제 작업(current를 삭제함)
+		if(current == first)//3-1.첫번째 원소일 때
+		{
+			first = first.next;
+		}
+		else if(current == last)//3-2.마지막 원소일 때
+		{
+			last = previous;
+			last.next = null;
+		}
+		else //3-3.중간 원소일 때
+		{
+			previous.next = current.next;
+		}
 		
-		
+		return true;
 	}
 
 	private void insert(int type) 
