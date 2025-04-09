@@ -21,19 +21,6 @@ class Book{
 		System.out.println();
 	}
 	
-	public int getBookid() {
-		return bookid;
-	}
-	public String getBookname() {
-		return bookname;
-	}
-	public String getPublisher() {
-		return publisher;
-	}
-	public int getPrice() {
-		return price;
-	}
-	
 	public void setBookid(int bookid) {
 		this.bookid = bookid;
 	}
@@ -46,16 +33,39 @@ class Book{
 	public void setPrice(int price) {
 		this.price = price;
 	}
-	
-	
 }
 
-class BookStore {
-	private Connection con; // 멤버변수
-	private Statement stmt;
-	private ResultSet rs;
+class DB_Manager
+{
+	protected Connection con; // 멤버변수
+	protected Statement stmt;
+	protected ResultSet rs;
+	
+	public void getConn() {
+		String url = "jdbc:oracle:thin:@localhost:1521:xe";
+		String userid = "c##madang"; // c##추가
+		String pwd = "c##madang"; // c##추가
+
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("드라이버 로드 성공");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			System.out.println("데이터베이스 연결 준비 .....");
+			con = DriverManager.getConnection(url, userid, pwd);
+			System.out.println("데이터베이스 연결 성공");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+class BookStore extends DB_Manager{
 	
 	private Book books[];
+//	private Customer customers[];
 	
 	public BookStore(){
 		books = new Book[10];
@@ -75,27 +85,6 @@ class BookStore {
 			books[i].printBook();
 		}
 		
-	}
-	
-
-	public void getConn() {
-		String url = "jdbc:oracle:thin:@localhost:1521:xe";
-		String userid = "c##madang"; // c##추가
-		String pwd = "c##madang"; // c##추가
-
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("드라이버 로드 성공");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			System.out.println("데이터베이스 연결 준비 .....");
-			con = DriverManager.getConnection(url, userid, pwd);
-			System.out.println("데이터베이스 연결 성공");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void getBookDB() { // 생성자
