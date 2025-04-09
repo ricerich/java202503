@@ -6,14 +6,81 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-class Booklist {
-	Connection con; // 멤버변수
-	Statement stmt;
-	ResultSet rs;
+class Book{
+	private int bookid;
+	private String bookname;
+	private String publisher;
+	private int price;
+	
+	public void printBook()
+	{
+		System.out.print(" "+bookid);
+		System.out.print(" "+bookname);
+		System.out.print(" "+publisher);
+		System.out.print(" "+price);
+		System.out.println();
+	}
+	
+	public int getBookid() {
+		return bookid;
+	}
+	public String getBookname() {
+		return bookname;
+	}
+	public String getPublisher() {
+		return publisher;
+	}
+	public int getPrice() {
+		return price;
+	}
+	
+	public void setBookid(int bookid) {
+		this.bookid = bookid;
+	}
+	public void setBookname(String bookname) {
+		this.bookname = bookname;
+	}
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	
+	
+}
 
-	public Booklist() {
+class BookStore {
+	private Connection con; // 멤버변수
+	private Statement stmt;
+	private ResultSet rs;
+	
+	private Book books[];
+	
+	public BookStore(){
+		books = new Book[10];
+		
+		for(int i=0; i<10; i++)
+		{
+			books[i] = new Book();
+		}
+	}
+	
+	public Book[] getBooks() {
+		return books;
+	}
+	
+	public void printBooks() {
+		for(int i=0; i<books.length;i++) {
+			books[i].printBook();
+		}
+		
+	}
+	
+
+	public void getConn() {
 		String url = "jdbc:oracle:thin:@localhost:1521:xe";
-		String userid = "`"; // c##추가
+		String userid = "c##madang"; // c##추가
 		String pwd = "c##madang"; // c##추가
 
 		try {
@@ -31,19 +98,54 @@ class Booklist {
 		}
 	}
 
-	public void sqlRun() { // 생성자
+	public void getBookDB() { // 생성자
 		String query = "SELECT * FROM book";
 		try {
 			stmt = con.createStatement(); // 2
 			rs = stmt.executeQuery(query); // 3
 			System.out.println("BOOK ID \tBOOK NAME \tPUBLISHER \t\tPRICE");
+			
+			int index=0;
+			while (rs.next()) {
+//				System.out.print("" + rs.getInt(1));
+//				System.out.print("\t" + rs.getString(2));
+//				System.out.print("\t\t" + rs.getString(3));
+//				System.out.println("\t\t\t" + rs.getInt(4));
+				
+				//books[0].bookid = rs.getInt(1);//private이라서 안됨!
+				int bookid = rs.getInt(1);
+				books[index].setBookid(bookid)
+				;
+				String bookname = rs.getString(2);
+				books[index].setBookname(bookname);
+				
+				String publisher = rs.getString(3);
+				books[index].setPublisher(publisher);
+				
+				int price = rs.getInt(4);
+				books[index].setPrice(price);;
+				
+				index++;
+			}
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public void getCustomerList() { // 생성자
+		String query = "select * from customer";
+		try {
+			stmt = con.createStatement(); // 2
+			
+			rs = stmt.executeQuery(query); // 3
+			System.out.println("customer ID \tcustomer 이름 \t주소 \t전화번호");
 			while (rs.next()) {
 				System.out.print("" + rs.getInt(1));
 				System.out.print("\t" + rs.getString(2));
-				System.out.print("\t\t" + rs.getString(3));
-				System.out.println("\t\t\t" + rs.getInt(4));
-
+				System.out.print("\t" + rs.getString(3));
+				System.out.println("\t" + rs.getString(4));
 			}
+			
 			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -53,6 +155,37 @@ class Booklist {
 
 public class DB_Main {
 	public static void main(String args[]) { // 메소드이면서 프로그램실행에 관여함
-		new Booklist().sqlRun();
+//		new BookStore().getBookList();
+//		new BookStore().getCustomerList();
+		
+		BookStore bs1 = new BookStore();
+		bs1.getConn();
+		bs1.getBookDB();
+		
+		Book[] books = bs1.getBooks();
+		
+		for(int i=0;i<books.length;i++) {
+			books[i].printBook();
+		}
+		
+		System.out.println("--------------------");
+		
+		bs1.printBooks();
+
+		
+		
+		
+//		bs1.printBooks();
+		
+//		bs1.getConn();
+//		bs1.getCustomerList();
 	}
 }
+
+
+
+
+
+
+
+
